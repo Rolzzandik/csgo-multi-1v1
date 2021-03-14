@@ -14,6 +14,7 @@ public void LoadRoundTypes() {
   for (int i = 0; i < g_numRoundTypes; i++) {
     char cookieName[128];
     Format(cookieName, sizeof(cookieName), "multi1v1_allow%s", g_RoundTypeNames[i]);
+    PrintToServer(cookieName);
     g_AllowedRoundTypeCookies[i] =
         RegClientCookie(cookieName, "multi1v1 cookie", CookieAccess_Protected);
   }

@@ -85,7 +85,7 @@ bool g_HideStats[MAXPLAYERS + 1];
 bool g_AutoSpec[MAXPLAYERS + 1];
 
 #define AUTOSPEC_DEFAULT false
-#define HIDESTATS_DEFAULT false
+#define HIDESTATS_DEFAULT true
 Handle g_HideStatsCookie;
 Handle g_AutoSpecCookie;
 
@@ -105,7 +105,7 @@ bool g_BlockArenaDones[MAXPLAYERS + 1];
 int g_LastClientDeathTime[MAXPLAYERS + 1];
 
 /** Round-type data **/
-int g_numRoundTypes = 0;
+int g_numRoundTypes = 3;
 char g_RoundTypeNames[MAX_ROUND_TYPES][ROUND_TYPE_NAME_LENGTH];
 char g_RoundTypeDisplayNames[MAX_ROUND_TYPES][ROUND_TYPE_NAME_LENGTH];
 RoundTypeWeaponHandler g_RoundTypeWeaponHandlers[MAX_ROUND_TYPES];
@@ -360,9 +360,10 @@ public void OnPluginStart() {
       RegClientCookie("multi1v1_rifle", "multi1v1 rifle choice", CookieAccess_Public);
   g_SecondaryWeaponCookie =
       RegClientCookie("multi1v1_pistol", "multi1v1 pistol choice", CookieAccess_Public);
-
   Weapons_Init();
 }
+
+
 
 public void OnAllPluginsLoaded() {
   LoadRoundTypes();
@@ -741,7 +742,9 @@ public Action Event_OnRoundPostStart(Event event, const char[] name, bool dontBr
 public Action Timer_NoOpponentHint(Handle timer, int serial) {
   int client = GetClientFromSerial(serial);
   if (IsPlayer(client)) {
-    PrintHintText(client, "%t", "NoOpponentHint");
+  	char szBuffer[128];
+  	Format(szBuffer, sizeof(szBuffer), "%t", "NoOpponentHint");
+    ShowAlertTextAll(client, szBuffer);
   }
 }
 
@@ -1028,7 +1031,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
   }
 
   // To avoid cluttering up chat, these commands are hidden
-  char gunsChatCommands[][] = {"gun", "guns", ".gun", ".guns", "!gun", "!guns", "gnus"};
+  char gunsChatCommands[][] = {"gun", "guns", ".gun", ".guns", "!gun", "!guns", "!g", ".g"};
   bool block = (g_HideGunsChatCommandsCvar.IntValue != 0);
   Action ret = block ? Plugin_Handled : Plugin_Continue;
 
@@ -1203,8 +1206,8 @@ public void ResetClientVariables(int client) {
   g_Ranking[client] = -1;
   g_LetTimeExpire[client] = false;
   g_Preference[client] = 0;
-  g_PrimaryWeapon[client] = "weapon_ak47";
-  g_SecondaryWeapon[client] = "weapon_glock";
+  g_PrimaryWeapon[client] = "weapon_scar20";
+  g_SecondaryWeapon[client] = "weapon_deagle";
   g_HideStats[client] = HIDESTATS_DEFAULT;
   g_AutoSpec[client] = AUTOSPEC_DEFAULT;
 }
@@ -1231,7 +1234,9 @@ public void UpdateArena(int arena, int disconnected) {
 static void PlayerLeft(int arena, int player, int left) {
   if (!g_ArenaStatsUpdated[arena]) {
     Multi1v1_Message(player, "%t", "OpponentLeft");
-    PrintHintText(player, "%t", "OpponentLeftHint");
+    char szBuffer[128];
+	Format(szBuffer, sizeof(szBuffer), "%t", "OpponentLeftHint");
+    ShowAlertTextAll(player, szBuffer);
     DB_RoundUpdate(player, left, false);
   }
 

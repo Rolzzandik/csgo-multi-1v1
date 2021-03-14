@@ -63,10 +63,10 @@ public void Weapons_Init() {
  */
 static void LoadBackupConfig() {
   LogError("Plugin forced to fallback to backup weapons only");
-  g_Rifles[0][0] = "weapon_ak47";
+  g_Rifles[0][0] = "weapon_scar20";
   g_Rifles[0][1] = "AK47";
   g_Rifles[0][2] = "T";
-  g_Rifles[1][0] = "weapon_m4a1";
+  g_Rifles[1][0] = "weapon_scar20";
   g_Rifles[1][1] = "M4A1";
   g_Rifles[1][2] = "CT";
   g_numRifles = 2;

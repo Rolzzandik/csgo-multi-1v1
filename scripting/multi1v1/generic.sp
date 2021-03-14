@@ -1,4 +1,4 @@
-#define MESSAGE_PREFIX "[\x05Multi1v1\x01] "
+#define MESSAGE_PREFIX "[\x0BBROKENCORE\x01] "
 #define DEBUG_CVAR "sm_multi1v1_debug"
 #define INTEGER_STRING_LENGTH 20  // max number of digits a 64-bit integer can use up as a string
 // this is for converting ints to strings when setting menu values/cookies
@@ -310,4 +310,16 @@ public float fmin(float x, float y) {
 
 public float fmax(float x, float y) {
   return (x < y) ? y : x;
+}
+
+public void ShowAlertTextAll(int iClient, const char[] sMessage)
+{
+	int iDuration = 5;
+	Event hEvent = CreateEvent("show_survival_respawn_status", true);
+	
+	hEvent.SetString("loc_token", sMessage);
+	hEvent.SetInt("duration", iDuration);
+	hEvent.SetInt("userid", -1);
+	hEvent.FireToClient(iClient);
+	hEvent.Cancel();
 }
